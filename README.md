@@ -2,7 +2,7 @@
 
 A real-time assistive navigation system for visually impaired individuals using monocular depth estimation deployed on an embedded edge device (NVIDIA Jetson).
 
-> CS [Course Number] Final Project — University of Texas at Dallas  
+> CS 4390 Final Project 
 > Team: Maryam Sulaiman, Giovani Jonenson, Roslyn Collings, Mitchell Tuan Vu
 
 ---
