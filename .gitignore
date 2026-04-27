@@ -1,0 +1,30 @@
+# Dataset (too large for GitHub — share via Google Drive)
+dataset/
+data/
+
+# Model weights (large files)
+models/finetuned-depth-model/
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Video/image output files
+*.mp4
+*.avi
+*.mov
