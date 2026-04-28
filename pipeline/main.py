@@ -22,7 +22,7 @@ import matplotlib
 import winsound
 import time
 from depth_anything_v2.dpt import DepthAnythingV2
-from metric_depth.depth_anything_v2.dpt import DepthAnythingV2 as MetricDepthAnything
+#from metric_depth.depth_anything_v2.dpt import DepthAnythingV2 as MetricDepthAnything
 
 
 class DepthAnythingPredictor:
@@ -45,13 +45,8 @@ class DepthAnythingPredictor:
 
         cfg = model_configs[encoder].copy()
 
-        if metric:
-            max_depth = 20 if dataset == "hypersim" else 80
-            self.model = MetricDepthAnything(**{**cfg, 'max_depth': max_depth})
-            ckpt = "NYUmodel.pth"
-        else:
-            self.model = DepthAnythingV2(**cfg)
-            ckpt = f"depth_anything_v2_{encoder}.pth"
+        self.model = DepthAnythingV2(**cfg)
+        ckpt = f"depth_anything_v2_{encoder}.pth"
 
         self.model.load_state_dict(torch.load(ckpt, map_location="cpu"))
         self.model = self.model.to(self.device).eval()
@@ -66,7 +61,7 @@ class DepthAnythingPredictor:
         colormap = (colormap * 255).astype(np.uint8)
         return cv2.cvtColor(colormap, cv2.COLOR_RGB2BGR)
 
-    def infer_video(self, video_path, show=False):
+    def infer_video(self, video_path, d, v, show=False):
         cap = cv2.VideoCapture(video_path)
         last_beep = 0
         if not cap.isOpened():
@@ -97,20 +92,22 @@ class DepthAnythingPredictor:
             depth = depth[cy-120:cy+120, cx-120:cx+120]
 
             if prevdepth is not None:
-                velocity = depth - prevdepth
-                print(velocity)
+                velocity = -(depth - prevdepth)
+                #print(velocity)
                 
                 #low beep if detecting oncoming object
-                if (velocity < -60).any():
+                if (velocity > v).any():
                     if time.time() - last_beep > 3:
                         winsound.Beep(500, 800)
                         last_beep = time.time()
+                        print("velocity warning")
 
             #high beep if detecting close object
-            if (depth > 250).any():
+            if (depth > d).any():
                 if time.time() - last_beep > 3:
                     winsound.Beep(1000, 800)
                     last_beep = time.time()
+                    print("distance warning")
             
             prevdepth = depth.copy()
 
@@ -131,5 +128,5 @@ if __name__ == "__main__":
     winsound.Beep(1000, 200)
 
     # show=False avoids the cv2.imshow crash if you don't have GUI OpenCV
-    depth_model.infer_video(0, show=True)
+    depth_model.infer_video(0, d=250, v=200,show=True)
 
