@@ -270,46 +270,7 @@ def train_fn():
 
 print("Script loaded, num_workers will be 0")
 #You can run this code with 1 gpu. Just set num_processes=1
-'''
 if __name__ == '__main__':
     notebook_launcher(train_fn, num_processes=1)
 # ignore the error. it's harmless
-'''
-def eval_only():
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    model = DepthAnythingV2(**{**model_configs[model_encoder], 'max_depth': max_depth})
-    model.load_state_dict(torch.load('NYUmodel.pth', map_location=device))
-    model.eval().to(device)
-
-    _, val_dataloader = get_dataloaders(batch_size=1)
-
-    results = {'d1': 0, 'abs_rel': 0, 'rmse': 0, 'mae': 0, 'silog': 0}
-
-    for sample in tqdm(val_dataloader):
-        img, depth = sample['image'].float().to(device), sample['depth'][0].to(device)
-
-        with torch.no_grad():
-            pred = model(img)
-            pred = F.interpolate(pred[:, None], depth.shape[-2:], mode='bilinear', align_corners=True)[0, 0]
-
-        valid_mask = (depth <= max_depth) & (depth >= 0.001)
-        cur_results = eval_depth(pred[valid_mask], depth[valid_mask])
-
-        for k in results.keys():
-            results[k] += cur_results[k]
-
-    for k in results.keys():
-        results[k] = round((results[k] / len(val_dataloader)).item(), 4)
-
-    print("\n=== Evaluation Results ===")
-    for k, v in results.items():
-        print(f"  {k}: {v}")
-
-    os.makedirs('./nyu_eval_results', exist_ok=True)
-    with open('./nyu_eval_results/metrics.json', 'w') as f:
-        json.dump(results, f, indent=2)
-    print("\nSaved to ./nyu_eval_results/metrics.json")
-
-if __name__ == '__main__':
-    eval_only()
