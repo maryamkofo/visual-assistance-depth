@@ -5,7 +5,6 @@ data/
 # Model weights (large files)
 models/finetuned-depth-model/
 *.pt
-*.pth
 *.bin
 *.safetensors
 
