@@ -38,8 +38,8 @@ def get_all_files(directory):
     return all_files
 
 
-train_paths = get_all_files(r'C:\Users\mitch\Documents\GitHub\depanything-sandbox\Training-Dir\Depth-Anything-V2\nyudepthv2\train')
-val_paths   = get_all_files(r'C:\Users\mitch\Documents\GitHub\depanything-sandbox\Training-Dir\Depth-Anything-V2\nyudepthv2\val')
+train_paths = get_all_files(r'(path to DepthAnything dir)\Depth-Anything-V2\nyudepthv2\train')
+val_paths   = get_all_files(r'(path to DepthAnything dir)\Depth-Anything-V2\nyudepthv2\val')
 
 #NYU Depth V2 40k. Original NYU is 400k
 class NYU(torch.utils.data.Dataset):
@@ -167,8 +167,8 @@ warmup_epochs = 0.5
 scheduler_rate = 1
 load_state = False
 
-state_path      = r'C:\Users\mitch\Documents\GitHub\depanything-sandbox\Training-Dir\Depth-Anything-V2\checkpoints'
-save_model_path = r'C:\Users\mitch\Documents\GitHub\depanything-sandbox\Training-Dir\Depth-Anything-V2\model.pth'
+state_path      = r'(path to DepthAnything dir)\Depth-Anything-V2\checkpoints'
+save_model_path = r'(path to DepthAnything dir)\Depth-Anything-V2\model.pth'
 seed = 42
 mixed_precision = 'fp16'
 
