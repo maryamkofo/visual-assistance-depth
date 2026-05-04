@@ -19,7 +19,7 @@ def load_model():
         use_clstoken=False
     )
 
-    # 🔥 IMPORTANT FIX
+
     model.max_depth = 10.0
 
     ckpt = torch.load("depth_anything_v2_vits.pth", map_location="cpu")
